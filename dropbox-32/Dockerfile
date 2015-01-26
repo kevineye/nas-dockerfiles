@@ -11,10 +11,6 @@ MAINTAINER Kevin Eye <kevineye@gmail.com>
 # CONFIG:
 # Follow link from docker logs -f dropbox
 
-ENV DB_UID 0
-ENV DB_GID 100
-ENV DB_UMASK 0002
-
 ADD https://www.dropbox.com/download?plat=lnx.x86 /tmp/dropbox.tar.gz
 
 RUN tar xzf /tmp/dropbox.tar.gz \
@@ -22,6 +18,11 @@ RUN tar xzf /tmp/dropbox.tar.gz \
 
 ADD run.sh /run.sh
 
-VOLUME /.dropbox /Dropbox
+ENV DB_UID 0
+ENV DB_GID 100
+ENV DB_UMASK 0002
+
+VOLUME /.dropbox
+VOLUME /Dropbox
  
 CMD ["/bin/sh", "/run.sh"]

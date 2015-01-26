@@ -14,8 +14,13 @@ MAINTAINER Kevin Eye <kevineye@gmail.com>
 ADD https://downloads.plex.tv/plex-media-server/0.9.11.7.803-87d0708/plexmediaserver_0.9.11.7.803-87d0708_i386.deb /tmp/plexmediaserver.deb
 
 RUN dpkg -i /tmp/plexmediaserver.deb
+RUN mkdir -p /config/tmp \
+ && chown -R plex:plex /config \
+ && chown -R 0775 /config
+
+ADD plexmediaserver /etc/default/plexmediaserver
 
 VOLUME /share
-VOLUME /root/Library
+VOLUME /config
  
 CMD ["start_pms"]
