@@ -11,5 +11,6 @@ RUN apt-get install -yqq avahi-daemon || /bin/true # libpam-systemd will probabl
 
 ADD afpd.service /etc/avahi/services/afpd.service
 ADD avahi-daemon.conf /etc/avahi/avahi-daemon.conf
+ADD run.sh /run.sh
 
-CMD ["/usr/sbin/avahi-daemon"]
+CMD ["/bin/sh", "/run.sh"]

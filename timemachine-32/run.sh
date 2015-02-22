@@ -34,4 +34,6 @@ fi
 
 chown $AFPD_LOGIN /share
 
+rm -f /var/run/cnid_metad.pid /var/run/afpd.pid
+
 exec ionice -c 3 /usr/bin/supervisord -n
