@@ -11,3 +11,5 @@ rsync -a --stats --delete --partial --rsync-path=/opt/bin/rsync $LINK_DEST_OPT /
 ssh $REMOTE_HOST '/opt/local/bin/purge-decay '$REMOTE_DIR'/complete-*'
 
 rsync -a --stats --delete --partial --rsync-path=/opt/bin/rsync /backup/TimeMachine $REMOTE_HOST:$REMOTE_DIR/
+
+ssh $REMOTE_HOST df -h | grep /mnt/eSata
