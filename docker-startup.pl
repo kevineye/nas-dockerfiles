@@ -5,6 +5,7 @@ start('samba');
 start('avahi');
 start('timemachine');
 start('utorrent');
+start('transmission');
 start('btsync');
 start('dropbox');
 start('plex');
