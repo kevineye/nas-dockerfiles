@@ -1,5 +1,5 @@
 #!/bin/sh
 
-rm -f /var/run/avahi-daemon
+rm -rf /var/run/avahi-daemon
 
 exec /usr/sbin/avahi-daemon
