@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js" manifest="cache.manifest">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="">
+        <meta name="viewport" content="width=device-width, user-scalable=1, initial-scale=1, maximum-scale=1">
+		<title>HomeControl</title>
+		<link rel="shortcut icon" href="icons/favicon.ico">
+		<link rel="stylesheet" type="text/css" href="css/normalize.css">
+		<link rel="stylesheet" type="text/css" href="css/demo.css">
+		<link rel="stylesheet" type="text/css" href="css/component.css">
+		<script src="js/modernizr.custom.js"></script>
+        <link rel="apple-touch-icon" href="icons/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="icons/apple-touch-icon-72x72.png">  
+        <link rel="apple-touch-icon" sizes="114x114" href="icons/apple-touch-icon-114x114.png">
+        <style>
+		
+		    body {
+		        margin: 10px 0;
+		    }
+		    
+            h2 {
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: #148544;
+                font-weight: 700;
+                padding: 8px 0 0;
+                font-size: 0.8em;
+                -webkit-backface-visibility: hidden;
+            }
+
+		    .section {
+		        padding: 1em;
+		    }
+		    
+            .wrapper section {
+                padding: 10px;
+                width: auto;
+            }
+            
+            .progress-button {
+                padding: 0;
+                width: 115px;
+            }
+
+            .progress-button.state-error {
+                background: #C66;
+            }
+            
+            .progress-button .content::after {
+                color: #FFF;
+            }
+		
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="wrapper">
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="downstairs_on" data-x10-command="macro">All On</button>
+				</section>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="downstairs_off" data-x10-command="macro">All Off</button>
+				</section>
+			</div>
+<!-- 
+			<div class="wrapper">
+			    <h2>Holiday</h2>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="special_on" data-x10-command="macro">On</button>
+				</section>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="special_off" data-x10-command="macro">Off</button>
+				</section>
+			</div>
+ -->
+			<div class="wrapper">
+			    <h2>Play Room</h2>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="play_room_swing" data-x10-command="on">On</button>
+				</section>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="play_room_swing" data-x10-command="off">Off</button>
+				</section>
+			</div>
+			<div class="wrapper">
+			    <h2>Living Room</h2>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="living_room_couch" data-x10-command="on">Couch On</button>
+				</section>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="living_room_couch" data-x10-command="off">Couch Off</button>
+				</section>
+				<br>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="living_room_chair" data-x10-command="on">Chair On</button>
+				</section>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="living_room_chair" data-x10-command="off">Chair Off</button>
+				</section>
+				<br>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="living_room_swing" data-x10-command="on">Corner On</button>
+				</section>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="living_room_swing" data-x10-command="off">Corner Off</button>
+				</section>
+			</div>
+			<div class="wrapper">
+			    <h2>Office</h2>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="office" data-x10-command="on">On</button>
+				</section>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="office" data-x10-command="off">Off</button>
+				</section>
+			</div>
+			<div class="wrapper">
+			    <h2>Dining Room</h2>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="dining_room" data-x10-command="on">On</button>
+				</section>
+				<section>
+					<button class="progress-button" data-style="fill" data-horizontal data-x10-device="dining_room" data-x10-command="off">Off</button>
+				</section>
+			</div>
+		</div><!-- /container -->
+		<script src="js/classie.js"></script>
+		<script src="js/progressButton.js"></script>
+		<script src="js/jquery-1.11.2.min.js"></script>
+		<script>
+			[].slice.call( document.querySelectorAll( 'button.progress-button' ) ).forEach( function( bttn ) {
+				new ProgressButton( bttn, {
+					callback : function( instance ) {
+					
+						var progress = 0;
+						var interval = setInterval( function() {
+								progress = Math.min( progress + Math.random() * 0.1, 0.9 );
+								instance._setProgress( progress );
+
+								if( progress === 0.9 ) {
+									clearInterval( interval );
+								}
+							}, 200 );
+                        
+                        $.post('x10.cgi/' + $(bttn).data('x10-device') + '/' + $(bttn).data('x10-command'))
+                            .done(function(data, textStatus, jqXHR) {
+					            clearInterval(interval);
+					            instance._setProgress(1);
+					            instance._stop(data.success ? 1 : -1);
+                            })
+                            .fail(function(jqXHR, textStatus, errorThrown) {
+					            clearInterval(interval);
+					            instance._setProgress(1);
+					            instance._stop(-1);
+                            });
+					}
+				} );
+			} );
+		</script>
+	</body>
+</html>

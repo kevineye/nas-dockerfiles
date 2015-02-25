@@ -9,7 +9,7 @@ start('btsync');
 start('dropbox');
 start('plex');
 start('camerasync');
-
+start('heyu');
 
 sub start {
     my ($container) = @_;

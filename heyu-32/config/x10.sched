@@ -1,0 +1,28 @@
+macro play_room_on   0 on F5; on H1,2,3
+macro play_room_off  0 off F5; off H1,2,3
+macro downstairs_on  0 on F1,2,3,4,5,6
+macro downstairs_off 0 off F1,2,3,4,5,6; off H1,2,3; off E9; off F1,2,3,4,5,6;
+macro special_on     0 on H1,2,3; on E9
+macro special_off    0 off H1,2,3; off E9
+macro early_on       0 on F1,3,6
+macro morning_on     0 on F3,4,5; on H1,2,3; on E9
+macro morning_off    0 off F1,2,3,4,5,6
+macro evening_on     0 on F1,2,3,4,5,6
+macro night_off      0 off F1,2,3,4,5,6; off H1,2,3; off E9
+
+trigger E1 on  play_room_on
+trigger E1 off play_room_off
+trigger E2 on  downstairs_on
+trigger E2 off downstairs_off
+trigger E3 on  special_on
+trigger E3 off special_off
+
+trigger E4 on  downstairs_on
+trigger E4 off downstairs_off
+trigger E5 on  special_on
+trigger E5 off special_off
+
+timer smtwtfs 01/01-12/31 05:00 00:00 early_on null dawngt 04:00
+timer smtwtfs 01/01-12/31 07:00 00:00 morning_on null dawngt 06:00
+timer smtwtfs 01/01-12/31 dawn+60 00:00 morning_off null
+timer smtwtfs 01/01-12/31 dusk-45 02:00 evening_on night_off
