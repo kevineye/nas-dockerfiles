@@ -4,11 +4,12 @@ use strict;
 start('samba');
 start('avahi');
 start('timemachine');
+start('plexconnect');
+start('plex');
 start('utorrent');
 start('transmission');
 start('btsync');
 start('dropbox');
-start('plex');
 start('camerasync');
 start('heyu');
 
