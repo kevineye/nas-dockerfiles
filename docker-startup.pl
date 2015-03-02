@@ -12,6 +12,7 @@ start('btsync');
 start('dropbox');
 start('camerasync');
 start('heyu');
+start('crashplan');
 
 sub start {
     my ($container) = @_;
