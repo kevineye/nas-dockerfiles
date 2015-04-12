@@ -1,14 +1,7 @@
 FROM kevineye/base-32
 MAINTAINER Kevin Eye <kevineye@gmail.com>
 
-# BUILD
-# docker build -t kevineye/heyu-32 .
-
-# RUN
-# sudo chmod 666 /dev/ttyUSB0
-# docker run --name heyu -d -p 7990:80 --privileged -v /etc/localtime:/etc/localtime kevineye/heyu-32
-
-RUN apt-get -yqq install apache2 apache2-utils make gcc
+RUN apt-get -yqq install apache2 apache2-utils make gcc supervisor
 
 ADD heyu-2.11-rc1.tar.gz /tmp
 
@@ -43,6 +36,10 @@ ENV APACHE_PID_FILE /var/run/apache2.pid
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_RUN_DIR /var/run/apache2
 
+ADD supervisor.conf /etc/supervisor/conf.d/
+ADD httpd-foreground /usr/local/bin/
+
 EXPOSE 80
 
-CMD ["/bin/sh", "/run.sh"]
+CMD ["/usr/bin/supervisord"]
+
