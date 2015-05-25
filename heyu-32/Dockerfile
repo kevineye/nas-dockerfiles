@@ -27,7 +27,8 @@ ADD app /app
 ADD run.sh /run.sh
 ADD home-control.conf /etc/apache2/sites-enabled/home-control.conf
 
-RUN chmod 666 /usr/local/etc/heyu/x10state
+RUN chmod 666 /usr/local/etc/heyu/x10state \
+ && chmod 777 /usr/local/etc/heyu
 
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP users
