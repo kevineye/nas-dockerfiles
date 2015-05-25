@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 use strict;
 
+system 'chmod 666 /dev/ttyUSB0';
+
 start('samba');
 start('avahi');
 start('timemachine');
@@ -11,7 +13,7 @@ start('transmission');
 start('btsync');
 start('dropbox');
 start('camerasync');
-start('heyu');
+start('heyu-32');
 start('crashplan');
 
 sub start {
