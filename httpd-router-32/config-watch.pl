@@ -20,7 +20,7 @@ my $my_container_id = get_my_container_id();
 update();
 
 # process each already-running container as if it just started
-chomp and handle_container_start($_) for qx{docker ps -f status=running -q};
+chomp and handle_container_start($_) for qx{docker ps -q};
 
 # start watching files and docker event socket for changes
 # this starts a Mojo::IOLoop and will not return

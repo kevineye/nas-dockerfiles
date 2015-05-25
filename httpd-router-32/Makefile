@@ -31,3 +31,6 @@ shell: build
 	-docker rm -f $(NAME) 2>&1 >/dev/null
 	@clear
 	docker run --rm -it --name $(NAME) -p 80:80 -v "$(CURDIR)":/app -v /var/run/docker.sock:/var/run/docker.sock $(NAMESPACE)/$(NAME) bash
+
+enter:
+	docker exec -it $(NAME) bash
