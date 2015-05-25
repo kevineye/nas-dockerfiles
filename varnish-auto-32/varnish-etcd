@@ -1,0 +1,200 @@
+#!/usr/bin/perl
+use strict;
+use autodie;
+
+use Mojo::JSON qw(decode_json encode_json);
+use Mojo::URL;
+use Mojo::UserAgent;
+use YAML;
+
+my ($cmd, @args) = @ARGV;
+
+my $etcd_addr = $ENV{ETCD_ADDR} || "$ENV{ETCD_PORT_4001_TCP_ADDR}:$ENV{ETCD_PORT_4001_TCP_PORT}";
+$etcd_addr = 'localhost:4001' if $etcd_addr eq ':';
+$etcd_addr = "http://$etcd_addr" unless $etcd_addr =~ m{://};
+my $etcd = Mojo::URL->new($etcd_addr);
+
+my $ua = Mojo::UserAgent->new->max_redirects(3);
+
+sub usage () {
+    die <<USAGE;
+usage:
+  $0 print
+  $0 print <key>
+  $0 clear
+  $0 rm <key>
+  $0 load <file>
+  $0 load <yaml>
+  $0 load -
+  $0 load <key> <file>
+  $0 load <key> <yaml>
+  $0 load <key> -
+USAGE
+}
+
+sub get_key ($) {
+    my $key = shift;
+    $key =~ s{[^0-9a-zA-Z_\-]}{}g;
+    return $key;
+}
+
+sub print_json ($) {
+    open STDOUT, '| jq .' if -t STDOUT and `which jq`;
+    print encode_json shift;
+}
+
+sub print_all () {
+    my $all = {};
+    my $tx = $ua->get($etcd->path('/v2/keys/apps/')->query({recursive => 'true'}));
+    unless ($tx->success) {
+        my $err = $tx->error;
+        die "error: $err->{code} $err->{message}\n";
+    }
+    my $json = $tx->res->json;
+    if ($json and $json->{node}{nodes}) {
+        for my $node (@{$json->{node}{nodes}}) {
+            my $key = $node->{key};
+            $key =~ s{^/apps/}{};
+            $all->{$key} = decode_json $node->{value} if $node->{value};
+        }
+    }
+    print_json $all;
+    print "\n";
+}
+
+sub print_one ($) {
+    my $key = get_key shift;
+    my $tx = $ua->get($etcd->path("/v2/keys/apps/$key"));
+    unless ($tx->success) {
+        my $err = $tx->error;
+        die "error: $err->{code} $err->{message}\n";
+    }
+    my $json = $tx->res->json;
+    if ($json and $json->{node} and $json->{node}{value}) {
+        print_json decode_json $json->{node}{value};
+        print "\n";
+    } else {
+        die "no key $key\n";
+    }
+}
+
+sub remove_all () {
+    my $tx = $ua->delete($etcd->path("/v2/keys/apps"));
+    unless ($tx->success) {
+        my $err = $tx->error;
+        die "error: $err->{code} $err->{message}\n";
+    }
+}
+
+sub remove_one ($) {
+    my $key = get_key shift;
+    my $tx = $ua->delete($etcd->path("/v2/keys/apps/$key"));
+    unless ($tx->success) {
+        my $err = $tx->error;
+        die "error: $err->{code} $err->{message}\n";
+    }
+}
+
+sub load_all_stdin () {
+    load_all_fh STDIN;
+}
+
+sub load_one_stdin ($) {
+    my $key = get_key shift;
+    load_one_fh $key, STDIN;
+}
+
+sub load_all_json ($) {
+    my $json = decode_json shift or die "invalid json\n";
+    load_all_data $json;
+}
+
+sub load_all_data ($) {
+    my $data = shift;
+    for my $key (keys %$data) {
+        load_one_data $key $data->{key};
+    }
+}
+
+sub looks_like_json ($) {
+    return $_[0] =~ m{^\s*[\[\{\"\']};
+}
+
+sub looks_like_yaml ($) {
+    return $_[0] =~ m{:|\n};
+}
+
+sub load_one_json ($$) {
+    my $key = get_key shift;
+    my $json = decode_json shift or die "invalid json\n";
+    load_one_data $key, $json;
+}
+
+sub load_one_data ($$) {
+    my $key = get_key shift;
+    my $data = shift;
+    my $tx = $ua->put($etcd->path("/v2/keys/apps/$key"), form => { value => encode_json $data });
+    unless ($tx->success) {
+        my $err = $tx->error;
+        die "error: $err->{code} $err->{message}\n";
+    }
+}
+
+sub load_all_file ($) {
+    my $file = shift;
+    open my $fh, '<', $file;
+    load_all_fh $fh;
+    close $fh;
+}
+
+sub load_one_file ($$) {
+    my $key = get_key shift;
+    my $file = shift;
+    open my $fh, '<', $file;
+    load_one_fh $fh;
+    close $fh;
+}
+
+sub load_all_fh (*) {
+    my $fh = shift;
+    my $yaml = join '', <$fh>;
+    my $data = YAML::Load($yaml);
+    load_all_data $data;
+}
+
+sub load_one_fh ($*) {
+    my $key = get_key shift;
+    my $fh = shift;
+    my $yaml = join '', <$fh>;
+    my $data = YAML::Load($yaml);
+    load_one_data $key, $data;
+}
+
+if ($cmd eq 'print' and @args == 0) {
+    print_all;
+} elsif ($cmd eq 'print' and @args == 1) {
+    print_one $args[0];
+} elsif ($cmd eq 'clear' and @args == 0) {
+    remove_all;
+} elsif ($cmd eq 'rm' and @args == 1) {
+    remove_one $args[0];
+} elsif ($cmd eq 'load' and @args == 1) {
+    if ($args[0] eq '-') {
+        load_all_stdin;
+    } elsif (looks_like_json($args[0])) {
+        load_all_json $args[0];
+    } else {
+        load_all_file $args[0];
+    }
+} elsif ($cmd eq 'load' and @args == 2) {
+    my $key = shift @args;
+    if ($args[0] eq '-') {
+        load_one_stdin $key;
+    } elsif (looks_like_json($args[0])) {
+        load_one_json $key, $args[0];
+    } else {
+        load_one_file $key, $args[0];
+    }
+} else {
+    usage;
+}
