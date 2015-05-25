@@ -5,7 +5,7 @@ MAINTAINER Kevin Eye <kevineye@gmail.com>
 # docker build -t kevineye/rsync-backup-32 .
 
 # RUN
-# docker run --name rsync-backup -v /mnt/sdb1/backup-freeze:/backup -v /etc/localtime:/etc/localtime kevineye/rsync-backup-32
+# docker run --name rsync-backup -v /mnt/sdb1:/backup -v /etc/localtime:/etc/localtime kevineye/rsync-backup-32
 # docker start -a rsync-backup
 
 RUN apt-get install -yqq ssh rsync

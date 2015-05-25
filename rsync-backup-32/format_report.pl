@@ -8,13 +8,12 @@ use Template::Mustache;
 my $out = join '', <>;
 
 my $pattern = <<'PATTERN';
-Create a readonly snapshot of '/mnt/sdb1/' in '/mnt/sdb1/backup-freeze'
-rsync-backup
 GoFlex Home version 10.0.x
+Create a readonly snapshot of '/mnt/sdb1' in '/mnt/sdb1/backup-snapshot'
 GoFlex Home version 10.0.x
 
 Number of files: [0-9,]+ \([^\)]*\)
-Number of created files: [0-9,]+ \([^\)]*\)
+Number of created files: (?:[0-9,]+ \([^\)]*\)|0)
 Number of regular files transferred: [0-9,]+
 Total file size: ([0-9,]+) bytes
 Total transferred file size: [0-9,]+ bytes
@@ -33,7 +32,7 @@ GoFlex Home version 10.0.x
 GoFlex Home version 10.0.x
 
 Number of files: [0-9,]+ \([^\)]*\)
-Number of created files: [0-9,]+ \([^\)]*\)
+Number of created files: (?:[0-9,]+ \([^\)]*\)|0)
 Number of regular files transferred: [0-9,]+
 Total file size: ([0-9,]+) bytes
 Total transferred file size: [0-9,]+ bytes
@@ -47,15 +46,18 @@ Total bytes received: [0-9,]+
 
 sent ([0-9,]+) bytes\s+received ([0-9,]+) bytes\s+([0-9,.]+) bytes/sec
 total size is [0-9,]+\s+speedup is [0-9,.]+
+Transaction commit: none \(default\)
+Delete subvolume '/mnt/sdb1/backup-snapshot'
 GoFlex Home version 10.0.x
 df: `/var/lib/oe-admin/minions': Permission denied
 df: `/var/lib/oe-admin/actions': Permission denied
 /dev/sda1\s+[0-9.]+[A-Z]\s*[0-9.]+[A-Z]\s*([0-9.]+[A-Z])\s+([0-9.]+)% /mnt/eSata
-Delete subvolume '/mnt/sdb1/backup-freeze'
 PATTERN
 
 $pattern =~ s{\n}{\\s+}g;
-my @data = $out =~ m{$pattern};
+my @data = $out =~ m{\s*$pattern\s*};
+
+#die @data ? 'good' : 'bad';
 
 my $data;
 if (@data) {
