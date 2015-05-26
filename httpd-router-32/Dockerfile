@@ -6,7 +6,7 @@ RUN apt-get install -yqq apache2 apache2-utils supervisor build-essential curl c
 # install perl modules
 RUN cpanm Mojolicious autodie IPC::System::Simple YAML
 
-RUN a2enmod headers rewrite proxy proxy_http cgi \
+RUN a2enmod headers rewrite proxy proxy_http cgi ssl \
  && mkdir -p /var/lock/apache2 \
  && chown www-data /var/lock/apache2 \
  && rm /var/www/html/index.html \
@@ -27,5 +27,6 @@ ADD supervisor.conf /etc/supervisor/conf.d/
 ADD httpd-foreground /usr/local/bin/
 
 EXPOSE 80
+EXPOSE 443
 
 CMD ["/usr/bin/supervisord"]
