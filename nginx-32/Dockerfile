@@ -8,6 +8,10 @@ RUN apt-get install -yqq nginx
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
 
+# use customized config
+COPY . /app
+RUN ln -sf /app/default.conf /etc/nginx/sites-enabled/default
+
 VOLUME ["/var/cache/nginx"]
 
 EXPOSE 80

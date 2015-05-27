@@ -27,3 +27,6 @@ shell: build
 	-docker rm -f $(NAME) 2>&1 >/dev/null
 	@clear
 	docker run --rm -it --name $(NAME) -v $(PUBLIC_DIR):/usr/share/nginx/html:ro $(NAMESPACE)/$(NAME) bash
+
+enter:
+	docker exec -it $(NAME) bash
