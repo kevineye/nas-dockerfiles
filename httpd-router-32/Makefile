@@ -18,11 +18,11 @@ clean:
 
 run: build
 	-docker rm -f $(NAME) 2>&1 >/dev/null
-	docker run -d --name $(NAME) --restart always -p 80:80 -p 443:443 -v "$(CURDIR)"/rules.yml:/app/rules.yml -v "$(CURDIR)"/certs:/certs -v /var/run/docker.sock:/var/run/docker.sock $(NAMESPACE)/$(NAME)
+	docker run -d --name $(NAME) --restart always -p 8443:443 -v "$(CURDIR)"/rules.yml:/app/rules.yml -v "$(CURDIR)"/certs:/certs -v /var/run/docker.sock:/var/run/docker.sock $(NAMESPACE)/$(NAME)
 
 dev: build
 	-docker rm -f $(NAME) 2>&1 >/dev/null
-	docker run -d --name $(NAME) -p 80:80 -p 443:443 -v "$(CURDIR)":/app -v "$(CURDIR)"/certs:/certs -v /var/run/docker.sock:/var/run/docker.sock $(NAMESPACE)/$(NAME)
+	docker run -d --name $(NAME) -p 8443:443 -v "$(CURDIR)":/app -v "$(CURDIR)"/certs:/certs -v /var/run/docker.sock:/var/run/docker.sock $(NAMESPACE)/$(NAME)
 
 test: build
 	docker run --rm -t -v "$(CURDIR)"/certs:/certs -v /var/run/docker.sock:/var/run/docker.sock $(NAMESPACE)/$(NAME) prove -v /app/t
@@ -30,7 +30,7 @@ test: build
 shell: build
 	-docker rm -f $(NAME) 2>&1 >/dev/null
 	@clear
-	docker run --rm -it --name $(NAME) -p 80:80 -p 443:443 -v "$(CURDIR)":/app -v "$(CURDIR)"/certs:/certs -v /var/run/docker.sock:/var/run/docker.sock $(NAMESPACE)/$(NAME) bash
+	docker run --rm -it --name $(NAME) -p 8443:443 -v "$(CURDIR)":/app -v "$(CURDIR)"/certs:/certs -v /var/run/docker.sock:/var/run/docker.sock $(NAMESPACE)/$(NAME) bash
 
 enter:
 	docker exec -it $(NAME) bash
