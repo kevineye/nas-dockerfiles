@@ -1,5 +1,7 @@
 NAMESPACE   = kevineye
 NAME        = heyu-32
+HOSTNAME    = home
+DOMAINNAME  = kevin-eye.com
 
 .PHONY: all clean run dev shell test
 
@@ -19,9 +21,12 @@ clean:
 run: build
 	#sudo chmod 666 /dev/ttyUSB0
 	-docker rm -f $(NAME) 2>&1 >/dev/null
-	docker run --name $(NAME) -d -p 7990:80 --privileged -v /etc/localtime:/etc/localtime $(NAMESPACE)/$(NAME)
+	docker run --name $(NAME) -d -h $(HOSTNAME).$(DOMAINNAME) --privileged -v /etc/localtime:/etc/localtime $(NAMESPACE)/$(NAME)
 
 shell: build
 	-docker rm -f $(NAME) 2>&1 >/dev/null
 	@clear
-	docker run --rm -it --name $(NAME) -p 7990:80 --privileged -v /etc/localtime:/etc/localtime $(NAMESPACE)/$(NAME) bash
+	docker run --rm -it --name $(NAME) -h $(HOSTNAME).$(DOMAINNAME) --privileged -v /etc/localtime:/etc/localtime $(NAMESPACE)/$(NAME) bash
+
+enter:
+	docker exec -it $(NAME) bash
