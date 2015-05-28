@@ -1,12 +1,6 @@
 FROM kevineye/base-32
 MAINTAINER Kevin Eye <kevineye@gmail.com>
 
-# BUILD
-# docker build -t kevineye/webdav-32 .
-
-# RUN
-# docker run --name camerasync -d -p 8089:80 -v /mnt/sdb1/Everything/Photo\ Library/CameraSync:/share -e PASSWORD=$( read -p "Password: " -s PASSWORD && echo $PASSWORD ) kevineye/webdav-32
-
 RUN apt-get -yqq install apache2 apache2-utils
 
 RUN a2enmod dav dav_fs \
