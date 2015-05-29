@@ -18,4 +18,4 @@ fi
 
 chown ${TRANSMISSION_UID}:${TRANSMISSION_GID} /var/lib/transmission-daemon /etc/transmission-daemon
 
-exec su transmission -c "umask $UT_UMASK; $TRANSMISSION -f --no-portmap --config-dir $CONFIG_DIR --log-info"
+exec su transmission -c "umask $TRANSMISSION_UMASK; $TRANSMISSION -f --no-portmap --config-dir $CONFIG_DIR --log-info"
