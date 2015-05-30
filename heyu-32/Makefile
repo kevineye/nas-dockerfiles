@@ -1,32 +1,58 @@
-NAMESPACE   = kevineye
-NAME        = heyu-32
-HOSTNAME    = home
-DOMAINNAME  = kevin-eye.com
+NAMESPACE     = kevineye
+NAME          = heyu-32
+CONTAINERNAME = home
 
-.PHONY: all clean run dev shell test
+IMAGETAG      = $(NAMESPACE)/$(NAME)
+HOSTNAME      = $(CONTAINERNAME).kevin-eye.com
 
+SHELLOPTS     = --name $(CONTAINERNAME) \
+                -h $(HOSTNAME).$(DOMAINNAME) \
+                --privileged -v /etc/localtime:/etc/localtime
+
+RUNOPTS       = $(SHELLOPTS) \
+                --restart always
+
+# ------------------------------
+
+SHELL         = /bin/bash
+.PHONY: all build forcebuild .rmbuilt scratchbuild run dev shell test enter install
+
+# make -- build, but do not run, the container
 all: build
 
-# .built, build, and find cmd work together to make build only run if any file has changed
+# make build -- build the image from the docker file if there are changes in the working dir
 build: .built
 
 .built: $(shell find $(CURDIR) -type d)
-	docker build -t $(NAMESPACE)/$(NAME) .
-	@docker inspect -f '{{.Id}}' $(NAMESPACE)/$(NAME) > .built
+	docker build -t $(IMAGETAG) .
+	@touch .built
 
-# use clean to re-build even if no file has changed
-clean:
+# make forcebuild -- build the image even if nothing appears to have changed
+forcebuild: .rmbuilt build
+
+.rmbuilt:
 	@rm -f .built
 
+# make scratchbuild -- build the image from scratch, without using cached layers
+scratchbuild:
+	docker build --no-cache -t $(IMAGETAG) .
+	@touch .built
+
+# make run -- start the container, building, and removing already-existing container as necessary
 run: build
-	#sudo chmod 666 /dev/ttyUSB0
-	-docker rm -f $(NAME) 2>&1 >/dev/null
-	docker run --name $(NAME) -d -h $(HOSTNAME).$(DOMAINNAME) --privileged -v /etc/localtime:/etc/localtime $(NAMESPACE)/$(NAME)
+	-docker rm -f $(CONTAINERNAME) 2>&1 >/dev/null
+	@docker run -d $(RUNOPTS) $(IMAGETAG)
 
+# make shell -- like run, but start a shell instead of the default command
 shell: build
-	-docker rm -f $(NAME) 2>&1 >/dev/null
+	-docker rm -f $(CONTAINERNAME) 2>&1 >/dev/null
 	@clear
-	docker run --rm -it --name $(NAME) -h $(HOSTNAME).$(DOMAINNAME) --privileged -v /etc/localtime:/etc/localtime $(NAMESPACE)/$(NAME) bash
+	@docker run --rm -it $(SHELLOPTS) $(IMAGETAG) bash
 
+# make enter -- enter shell in running container; must already be running
 enter:
-	docker exec -it $(NAME) bash
+	docker exec -it $(CONTAINERNAME) bash
+
+# make install -- setup host system for container
+install:
+	chmod 666 /dev/ttyUSB0

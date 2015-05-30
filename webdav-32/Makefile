@@ -16,7 +16,7 @@ RUNOPTS       = $(SHELLOPTS) \
 # ------------------------------
 
 SHELL         = /bin/bash
-.PHONY: all build forcebuild .rmbuilt scratchbuild run dev shell test enter
+.PHONY: all build forcebuild .rmbuilt scratchbuild run dev shell test enter install
 
 # make -- build, but do not run, the container
 all: build
