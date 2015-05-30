@@ -2,22 +2,22 @@ FROM kevineye/base-32
 MAINTAINER Kevin Eye <kevineye@gmail.com>
 # copied from https://github.com/elventear/docker-transmission
 
-ENV TRANSMISSION_UID 0
-ENV TRANSMISSION_GID 100
-ENV TRANSMISSION_UMASK 0002
-
 RUN apt-get install -yqq transmission-daemon
 
 ADD settings.json /etc/transmission-daemon/settings.json
 ADD run.sh /run.sh
 
-RUN useradd -d / -M -U -u 1500 transmission
+RUN chown data-user:users /var/lib/transmission-daemon \
+ && chown -R data-user /etc/transmission-daemon
 
 EXPOSE 12345
+EXPOSE 9091
 
 VOLUME /var/lib/transmission-daemon/downloads
 VOLUME /var/lib/transmission-daemon/incomplete
 VOLUME /var/lib/transmission-daemon/info
 VOLUME /etc/transmission-daemon
+
+USER data-user
 
 CMD ["/bin/sh", "/run.sh"]

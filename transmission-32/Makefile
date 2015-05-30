@@ -6,13 +6,17 @@ IMAGETAG      = $(NAMESPACE)/$(NAME)
 DATANAME      = $(CONTAINERNAME)-data
 HOSTNAME      = $(CONTAINERNAME).kevin-eye.com
 
-SHELLOPTS     = --name $(CONTAINERNAME) \
+OPTS          = --name $(CONTAINERNAME) \
                 -h $(HOSTNAME).$(DOMAINNAME) \
                 -p 12345:12345 -p 12345:12345/udp \
                 --volumes-from $(DATANAME) \
-                -e ADMIN_PASS=$(shell read -p "New transmission web password: " -s PASSWORD && echo $$PASSWORD)
+                -e ADMIN_PASS=$(shell read -p "New transmission web password: " -s PASSWORD && echo $$PASSWORD) \
+                -e PUBLIC_HTTP_PORT=9091
 
-RUNOPTS       = $(SHELLOPTS) \
+SHELLOPTS     = $(OPTS) \
+                -u root
+
+RUNOPTS       = $(OPTS) \
                 --restart always
 
 DATAOPTS      = -v /mnt/sdb1/Everything/Downloads/Torrents/TV:/var/lib/transmission-daemon/downloads \
