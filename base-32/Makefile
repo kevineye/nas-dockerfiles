@@ -1,22 +1,41 @@
-NAMESPACE   = kevineye
-NAME        = base-32
+NAMESPACE     = kevineye
+NAME          = base-32
 
-.PHONY: all clean run dev shell test
+IMAGETAG      = $(NAMESPACE)/$(NAME)
 
+SHELLOPTS     = 
+
+# ------------------------------
+
+SHELL         = /bin/bash
+.PHONY: all build forcebuild .rmbuilt scratchbuild run dev shell test enter install
+
+# make -- build, but do not run, the container
 all: build
 
-# .built, build, and find cmd work together to make build only run if any file has changed
+# make build -- build the image from the docker file if there are changes in the working dir
 build: .built
 
 .built: $(shell find $(CURDIR) -type d)
-	docker build -t $(NAMESPACE)/$(NAME) .
-	@docker inspect -f '{{.Id}}' $(NAMESPACE)/$(NAME) > .built
+	docker build -t $(IMAGETAG) .
+	@touch .built
 
-# use clean to re-build even if no file has changed
-clean:
+# make forcebuild -- build the image even if nothing appears to have changed
+forcebuild: .rmbuilt build
+
+.rmbuilt:
 	@rm -f .built
 
+# make scratchbuild -- build the image from scratch, without using cached layers
+scratchbuild:
+	docker build --no-cache -t $(IMAGETAG) .
+	@touch .built
+
+# make shell -- like run, but start a shell instead of the default command
 shell: build
-	-docker rm -f $(NAME) 2>&1 >/dev/null
 	@clear
-	docker run --rm -it --name $(NAME) $(NAMESPACE)/$(NAME) bash
+	@docker run --rm -it $(SHELLOPTS) $(IMAGETAG) bash
+
+# make install -- setup host system for container
+install:
+	grep -q '^data-user:.*:900:' /etc/passwd || useradd --uid 900 --gid 100 --system --no-create-home --no-user-group data-user
