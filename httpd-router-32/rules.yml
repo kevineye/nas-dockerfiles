@@ -1,1 +1,5 @@
-rules: []
+rules:
+  - from: '^$'
+    host: '^utorrent\.'
+    to: /gui/web/index.html
+    external: true

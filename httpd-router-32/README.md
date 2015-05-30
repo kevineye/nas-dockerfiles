@@ -98,3 +98,7 @@ Rules are an ordered list of properties. Rules are processed in order to complet
 **container** - direct traffic to this container. Must be only the host part of the container's `-h` hostname. Case sensitive. Can optionally be combined with "to".
 
 **group** - allows modifying rules in groups via REST API. Does not affect rule processing.
+
+**host** - regular expression filtering hostnames this rule applies to (i.e. from host).
+
+**scheme** - regular expression filtering schemes this path applies to (i.e. http or https).
