@@ -11,16 +11,14 @@ MAINTAINER Kevin Eye <kevineye@gmail.com>
 # ADMIN:
 # Log in to http://localhost:8080/gui/ (admin:<blank>)
 
-ENV UT_UID 0
-ENV UT_GID 100
-ENV UT_UMASK 0002
-
 ADD http://download-new.utorrent.com/endpoint/utserver/os/linux-i386-debian-7-0/track/beta/ /tmp/utorrent.tar.gz
 
 RUN cd /opt \
  && tar xvzf /tmp/utorrent.tar.gz \
  && mv /opt/$(ls /opt/|tail -1) /opt/utorrent-server \
- && useradd -d / -M -U -u 1500 utorrent
+ && useradd -d / -M -U -u 1500 utorrent \
+ && mkdir /share \
+ && chown data-user:users /opt/utorrent-server /share
 
 ADD run.sh /run.sh
 
@@ -29,5 +27,7 @@ EXPOSE 8080
 
 VOLUME /share
 VOLUME /opt/utorrent-server
+
+USER data-user
  
 CMD ["/bin/sh", "/run.sh"]
