@@ -9,7 +9,7 @@ RewriteEngine on
 % $hostmatch =~ s{([A-Za-z])}{'[' . uc($1) . lc($1) . ']'}eg;
 RewriteCond %{HTTP_HOST} ^<%= $hostmatch %>$ [OR]
 RewriteCond %{ENV:container_host} =<%= $container->{Config}{Hostname} %>
-RewriteRule ^(.*) http://<%= $container->{NetworkSettings}{IPAddress} %>/$1 [P]
+RewriteRule ^(.*) http://<%= $container->{NetworkSettings}{IPAddress} %>:<%= $container->{Env}{PUBLIC_HTTP_PORT} || 80 %>/$1 [P]
 
 % }
 % }

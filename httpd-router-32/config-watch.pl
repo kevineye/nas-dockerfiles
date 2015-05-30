@@ -88,6 +88,9 @@ sub handle_container_start ($) {
 
     # ignore ourself
     return if $info->{Id} eq $my_container_id;
+    
+    # add parsed ENV data
+    parse_container_env($info);
 
     # store; make sure to use long id from info, not supplied arg
     $containers{$info->{Id}} = $info;
@@ -128,6 +131,15 @@ sub get_my_container_id () {
     my $cgroups = qx{cat /proc/self/cgroup};
     $cgroups =~ m{:cpu:/docker/(\S+)};
     return $1;
+}
+
+
+# parse ENV args and add to container info
+sub parse_container_env($) {
+    my ($info) = @_;
+    my %env;
+    m{^(\w+)=(.*)} and $env{$1} = $2 for @{$info->{Config}{Env} || []};
+    $info->{Env} = \%env;
 }
 
 
