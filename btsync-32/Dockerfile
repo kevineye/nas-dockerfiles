@@ -1,7 +1,7 @@
 FROM kevineye/base-32
 MAINTAINER Kevin Eye <kevineye@gmail.com>
 
-ADD http://download.getsyncapp.com/endpoint/btsync/os/linux-i386/track/stable /tmp/bittorrent_sync.tar.gz
+ADD https://download-cdn.getsyncapp.com/stable/linux-i386/BitTorrent-Sync_i386.tar.gz /tmp/bittorrent_sync.tar.gz
 
 RUN mkdir /opt/btsync \
  && cd /opt/btsync \
