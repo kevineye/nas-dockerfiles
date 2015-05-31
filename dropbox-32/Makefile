@@ -15,7 +15,7 @@ SHELLOPTS     = $(OPTS) \
 RUNOPTS       = $(OPTS) \
                 --restart always
 
-DATAOPTS      = -v /mnt/sdb1/Everything/Dropbox:/Dropbox
+DATAOPTS      = -v /mnt/sdb1/Everything/Dropbox:/home/data-user/Dropbox
 
 # ------------------------------
 
