@@ -1,5 +1,9 @@
 rules:
-  - from: '^$'
-    host: '^utorrent\.'
+  - host: '^utorrent\.'
+    from: '^$'
     to: /gui/web/index.html
+    external: true
+  - host: '^btsync\.'
+    from: '^$'
+    to: /gui/
     external: true
