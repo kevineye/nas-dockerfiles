@@ -7,10 +7,12 @@ RUN cpanm --notest Mojolicious autodie IPC::System::Simple
 
 RUN git clone https://github.com/kevineye/cloudpipe.git /app
 
+ADD certs /certs
+
 ENV CLOUD_STORAGE /var/lib/cloud
 
 VOLUME /var/lib/cloud
 
 EXPOSE 443
 
-CMD [ "/app/server.pl", "daemon", "-l", "https://*:443" ]
+CMD [ "/app/server.pl", "daemon", "-l", "https://*:443?cert=/certs/server.crt&key=/certs/server.key" ]
