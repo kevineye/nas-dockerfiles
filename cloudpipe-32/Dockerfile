@@ -3,7 +3,7 @@ MAINTAINER Kevin Eye <kevineye@gmail.com>
 
 RUN apt-get install -yqq git cpanminus make libio-socket-ssl-perl
 
-RUN cpanm --notest Mojolicious autodie IPC::System::Simple
+RUN cpanm --notest Mojolicious autodie IPC::System::Simple File::MimeInfo::Magic
 
 RUN git clone https://github.com/kevineye/cloudpipe.git /app
 
