@@ -2,3 +2,5 @@
 ._*
 .DS_Store
 .data-vol-exists
+*.iml
+.idea/
