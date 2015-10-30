@@ -1,0 +1,83 @@
+NAMESPACE     = kevineye
+NAME          = syncthing
+CONTAINERNAME = syncthing
+
+IMAGETAG      = $(NAMESPACE)/$(NAME)
+DATANAME      = $(CONTAINERNAME)-data
+HOSTNAME      = $(CONTAINERNAME).kevin-eye.com
+
+OPTS          = --name $(CONTAINERNAME) \
+                -h $(HOSTNAME).$(DOMAINNAME) \
+                -p 22000:22000 \
+                -p 21025:21025/udp \
+                -p 21026:21026/udp \
+                -p 8384:8384 \
+                --volumes-from $(DATANAME) \
+                -e PUBLIC_HTTP_PORT=8384
+
+SHELLOPTS     = $(OPTS) \
+                -u root
+
+RUNOPTS       = $(OPTS) \
+                --restart always
+
+DATAOPTS      = -v /mnt/everything/Everything:/Everything
+
+# ------------------------------
+
+SHELL         = /bin/bash
+.PHONY: all build forcebuild .rmbuilt scratchbuild data cleandata run dev shell test enter
+
+# make -- build, but do not run, the container
+all: build
+
+# make build -- build the image from the docker file if there are changes in the working dir
+build: .built
+
+.built: $(shell find $(CURDIR) -type d)
+	docker build -t $(IMAGETAG) .
+	@touch .built
+
+# make forcebuild -- build the image even if nothing appears to have changed
+forcebuild: .rmbuilt build
+
+.rmbuilt:
+	@rm -f .built
+
+# make scratchbuild -- build the image from scratch, without using cached layers
+scratchbuild:
+	docker build --no-cache -t $(IMAGETAG) .
+	@touch .built
+
+# make data -- start data volume container, only if not already started
+data: .data-vol-exists
+
+.data-vol-exists:
+	-docker rm -v -f $(DATANAME) 2>&1 >/dev/null
+	docker run --name $(DATANAME) $(DATAOPTS) $(IMAGETAG) echo data
+	@touch .data-vol-exists
+
+# make cleandata -- remove data volume (and stop running container)
+cleandata:
+	-docker rm -f $(CONTAINERNAME) 2>&1 >/dev/null
+	-docker rm -v -f $(DATANAME) 2>&1 >/dev/null
+	@rm -f .data-vol-exists
+
+# make run -- start the container, building, starting data volume, and removing already-existing container as necessary
+run: build data
+	-docker rm -f $(CONTAINERNAME) 2>&1 >/dev/null
+	docker run -d $(RUNOPTS) $(IMAGETAG)
+
+run-inotify:
+	-docker rm -f syncthing-inotify 2>&1 >/dev/null
+	docker run -d --name $(CONTAINERNAME)-inotify --restart always -u 900:100 --volumes-from $(DATANAME) --net host tianon/syncthing-inotify syncthing-inotify -home /home/user/.config/syncthing/
+
+# make shell -- like run, but start a shell instead of the default command
+shell: build data
+	-docker rm -f $(CONTAINERNAME) 2>&1 >/dev/null
+	@clear
+	@docker run --rm -it $(SHELLOPTS) $(IMAGETAG) bash
+
+# make enter -- enter shell in running container; must already be running
+enter:
+	docker exec -it $(CONTAINERNAME) bash
