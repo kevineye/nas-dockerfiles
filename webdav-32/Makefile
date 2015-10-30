@@ -7,7 +7,7 @@ HOSTNAME      = $(CONTAINERNAME).kevin-eye.com
 
 SHELLOPTS     = --name $(CONTAINERNAME) \
                 -h $(HOSTNAME).$(DOMAINNAME) \
-                -v /mnt/sdb1/Everything/Photo\ Library/CameraSync:/share \
+                -v /mnt/everything/Everything/Photo\ Library/CameraSync:/share \
                 -e PASSWORD=$(shell read -p "New WebDav password: " -s PASSWORD && echo $$PASSWORD)
 
 RUNOPTS       = $(SHELLOPTS) \

@@ -5,8 +5,8 @@ MAINTAINER Kevin Eye <kevineye@gmail.com>
 # docker build -t kevineye/crashplan-32 .
 
 # RUN
-# docker run --name crashplan-data -v /mnt/sdb1:/backup -v /etc/localtime:/etc/localtime kevineye/crashplan-32 echo data
-# docker run --name crashplan -d -p 4242:4242 -p 4243:4243 -v /mnt/sdb1:/backup --volumes-from crashplan-data kevineye/crashplan-32
+# docker run --name crashplan-data -v /mnt/everything:/backup -v /etc/localtime:/etc/localtime kevineye/crashplan-32 echo data
+# docker run --name crashplan -d -p 4242:4242 -p 4243:4243 -v /mnt/everything:/backup --volumes-from crashplan-data kevineye/crashplan-32
 
 # ADMIN
 # See headless config article:

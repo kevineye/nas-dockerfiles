@@ -19,8 +19,8 @@ SHELLOPTS     = $(OPTS) \
 RUNOPTS       = $(OPTS) \
                 --restart always
 
-DATAOPTS      = -v /mnt/sdb1/Everything/Downloads/Torrents/TV:/var/lib/transmission-daemon/downloads \
-                -v /mnt/sdb1/Everything/Downloads/Torrents/Active:/var/lib/transmission-daemon/incomplete
+DATAOPTS      = -v /mnt/everything/Everything/Downloads/Torrents/TV:/var/lib/transmission-daemon/downloads \
+                -v /mnt/everything/Everything/Downloads/Torrents/Active:/var/lib/transmission-daemon/incomplete
 
 # ------------------------------
 

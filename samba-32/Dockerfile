@@ -5,7 +5,7 @@ MAINTAINER Kevin Eye <kevineye@gmail.com>
 # docker build -t kevineye/samba-32 .
 
 # RUN:
-# docker run --name samba-data -v /mnt/sdb1/Everything:/share kevineye/samba-32 echo data
+# docker run --name samba-data -v /mnt/everything/Everything:/share kevineye/samba-32 echo data
 # docker run --name samba -d -p 139:139 -p 445:445 --volumes-from samba-data kevineye/samba-32
 
 # CONFIGURE:
