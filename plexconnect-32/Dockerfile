@@ -6,10 +6,10 @@ MAINTAINER Kevin Eye <kevineye@gmail.com>
 # docker build -t kevineye/plexconnect-32 .
 
 # CONFIGURE HOST
-# ifconfig eth0:1 192.168.1.152 netmask 255.255.255.0 up
+# ifconfig eth0:1 192.168.1.111 netmask 255.255.255.0 up
 
 # RUN
-# docker run --name plexconnect -d --net=host -e IP_PLEXCONNECT=192.158.1.152 kevineye/plexconnect-32
+# docker run --name plexconnect -d --net=host -e IP_PLEXCONNECT=192.158.1.111 kevineye/plexconnect-32
 
 RUN apt-get install -qqy python python-dev python-imaging curl unzip
 

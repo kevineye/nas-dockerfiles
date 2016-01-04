@@ -1,16 +1,19 @@
 NAMESPACE     = kevineye
-NAME          = plex-32
-CONTAINERNAME = plex
+NAME          = syncthing
+CONTAINERNAME = syncthing
 
 IMAGETAG      = $(NAMESPACE)/$(NAME)
 DATANAME      = $(CONTAINERNAME)-data
 HOSTNAME      = $(CONTAINERNAME).kevin-eye.com
 
 OPTS          = --name $(CONTAINERNAME) \
-                --net=host \
+                -h $(HOSTNAME).$(DOMAINNAME) \
+                -p 22000:22000 \
+                -p 21025:21025/udp \
+                -p 21026:21026/udp \
+                -p 8384:8384 \
                 --volumes-from $(DATANAME) \
-                -e PUBLIC_HTTP_HOST=$(HOSTNAME) \
-                -e PUBLIC_HTTP_PORT=32400
+                -e PUBLIC_HTTP_PORT=8384
 
 SHELLOPTS     = $(OPTS) \
                 -u root
@@ -18,7 +21,7 @@ SHELLOPTS     = $(OPTS) \
 RUNOPTS       = $(OPTS) \
                 --restart always
 
-DATAOPTS      = -v /mnt/everything/Everything:/share
+DATAOPTS      = -v /mnt/everything/Everything:/Everything
 
 # ------------------------------
 
@@ -63,7 +66,11 @@ cleandata:
 # make run -- start the container, building, starting data volume, and removing already-existing container as necessary
 run: build data
 	-docker rm -f $(CONTAINERNAME) 2>&1 >/dev/null
-	@docker run -d $(RUNOPTS) $(IMAGETAG)
+	docker run -d $(RUNOPTS) $(IMAGETAG)
+
+run-inotify:
+	-docker rm -f syncthing-inotify 2>&1 >/dev/null
+	docker run -d --name $(CONTAINERNAME)-inotify --restart always -u 900:100 --volumes-from $(DATANAME) --net host tianon/syncthing-inotify syncthing-inotify -home /home/user/.config/syncthing/
 
 # make shell -- like run, but start a shell instead of the default command
 shell: build data

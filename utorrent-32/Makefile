@@ -18,7 +18,7 @@ SHELLOPTS     = $(OPTS) \
 RUNOPTS       = $(OPTS) \
                 --restart always
 
-DATAOPTS      = -v /mnt/sdb1/Everything:/share
+DATAOPTS      = -v /mnt/everything/Everything:/share
 
 # ------------------------------
 

@@ -5,7 +5,7 @@ CONTAINERNAME = public
 IMAGETAG      = $(NAMESPACE)/$(NAME)
 HOSTNAME      = $(CONTAINERNAME).kevin-eye.com
 
-PUBLIC_DIR    = /mnt/sdb1/Everything/BTSync/Public
+PUBLIC_DIR    = /mnt/everything/Everything/Sync/Public
 
 SHELLOPTS     = --name $(CONTAINERNAME) \
                 -h $(HOSTNAME).$(DOMAINNAME) \

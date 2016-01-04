@@ -5,7 +5,7 @@ MAINTAINER Kevin Eye <kevineye@gmail.com>
 # docker build -t kevineye/utorrent-32 .
 
 # RUN:
-# docker run --name utorrent-data -v /mnt/sdb1/Everything:/share kevineye/utorrent-32 echo data
+# docker run --name utorrent-data -v /mnt/everything/Everything:/share kevineye/utorrent-32 echo data
 # docker run --name utorrent -d -p 8080:8080 -p 6881:6881 --volumes-from utorrent-data kevineye/utorrent-32
 
 # ADMIN:
