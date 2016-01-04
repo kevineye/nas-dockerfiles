@@ -1,0 +1,13 @@
+{
+  "download-dir": "\/downloads",
+  "incomplete-dir": "\/incomplete",
+  "incomplete-dir-enabled": true,
+  "peer-port": 12345,
+  "port-forwarding-enabled": false,
+  "rpc-authentication-required": true,
+  "rpc-username": "transmission",
+  "rpc-password": "transmission",
+  "rpc-port": 9091,
+  "rpc-url": "/transmission/",
+  "rpc-whitelist-enabled": false
+}
