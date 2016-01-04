@@ -2,7 +2,12 @@ FROM debian
 MAINTAINER Kevin Eye <kevineye@gmail.com>
 
 RUN apt-get -q update \
- && apt-get install -y -q transmission-daemon transmission-cli transmission-common
+ && apt-get install -y -q --no-install-recommends \
+    transmission-daemon \
+    transmission-cli \
+    transmission-common \
+    curl \
+    ca-certificates
 
 ADD settings.json /root/settings.json
 
